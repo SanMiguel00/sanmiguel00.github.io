@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>산미겔주</title>
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #main-container {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            /* 두께를 8px로 증가 */
+            border-top: 8px solid blue;
+            /* 두께를 8px로 증가 */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .sidebar .logo img {
+            max-width: 120px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .sidebar .logo h1 {
+            font-size: 1.4rem;
+            margin: 10px 0 0;
+        }
+
+        .sidebar .categories {
+            width: 100%;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .sidebar button {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            background-color: white;
+            color: black;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar button:hover {
+            background-color: #ddd;
+        }
+
+        .sidebar button.active {
+            background-color: blue;
+            color: white;
+        }
+
+        .sidebar .sub-buttons {
+            display: none;
+            flex-direction: column;
+            margin-top: 5px;
+            padding-left: 15px;
+        }
+
+        .sidebar .sub-buttons button {
+            background-color: #f9f9f9;
+            color: black;
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .sidebar .sub-buttons button:hover {
+            background-color: #ddd;
+        }
+
+        .fixed-button {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: calc(100% - 40px);
+            padding: 12px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .fixed-button:hover {
+            background-color: #ddd;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .content-body {
+            margin: 15px;
+            width: calc(100% - 30px);
+            height: calc(100% - 30px);
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            /* 제목과 세부 내용 간 거리 설정 */
+        }
+
+        .content-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .content-section {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .content-section p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .content-section img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .categories {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .categories button {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            background-color: white;
+            color: black;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .categories button:hover {
+            background-color: #ddd;
+        }
+
+        .categories button.active {
+            background-color: blue;
+            color: white;
+        }
+
+        .fixed-button {
+            position: absolute;
+            bottom: 75px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: calc(100% - 40px);
+            /* 패딩 간격과 동일하게 설정 */
+            padding: 12px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .fixed-button:hover {
+            background-color: #ddd;
+        }
+
+        .fixed-button2 {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: calc(100% - 40px);
+            /* 패딩 간격과 동일하게 설정 */
+            padding: 12px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .fixed-button2:hover {
+            background-color: #ddd;
+        }
+
+        .keyboard {
+            display: inline-block;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .key {
+            width: 50px;
+            height: 50px;
+            margin: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #444;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .key:hover {
+            background: #666;
+        }
+
+        .key:active {
+            background: #888;
+            transform: scale(0.95);
+        }
+
+        .special {
+            background: #555;
+        }
+
+        .function {
+            background: #1e88e5;
+        }
+
+        .double {
+            width: 100px;
+        }
+
+        .spacer {
+            width: 20px;
+        }
+
+        .key-info {
+            margin-top: 10px;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* 캡스락, 쉬프트, 엔터 키 길이 조정 */
+        .key[data-key="CapsLock"],
+        .key[data-key="Shift"],
+        .key[data-key="Enter"] {
+            width: 120px;
+        }
+
+        /* 스페이스 바 길이 조정 */
+        .key[data-key="Space"] {
+            width: 220px;  /* 스페이스 바를 길게 설정 */
+        }
+
+        /* HOME, END 키 길이 조정 */
+        .key[data-key="Home"],
+        .key[data-key="End"] {
+            width: 100px;  /* HOME과 END 키는 100px로 설정 */
+        }
+
+        /* 컨트롤, 윈도우, 알트 크기 조정 */
+        .key[data-key="Ctrl"],
+        .key[data-key="Win"],
+        .key[data-key="Alt"] {
+            width: 70px;  /* 컨트롤, 윈도우, 알트 키를 작게 설정 */
+        }
+
+        /* 반응형 디자인 (화면 크기 600px 이하) */
+        @media (max-width: 600px) {
+            .key {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .key.special,
+            .key.function {
+                width: 45px;
+                height: 45px;
+            }
+
+            /* 작은 화면에서도 스페이스 바 길이 조정 */
+            .key[data-key="Space"] {
+                width: 140px;  /* 작은 화면에서는 스페이스 바 길이 줄임 */
+            }
+
+            /* 작은 화면에서 HOME, END 키 길이 조정 */
+            .key[data-key="Home"],
+            .key[data-key="End"] {
+                width: 80px;  /* 작은 화면에서 HOME과 END 키는 80px로 설정 */
+            }
+
+            /* 작은 화면에서 컨트롤, 윈도우, 알트 크기 조정 */
+            .key[data-key="Ctrl"],
+            .key[data-key="Win"],
+            .key[data-key="Alt"] {
+                width: 60px;  /* 작은 화면에서 조금 더 작게 */
+            }
+
+            .row {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+    </style>
+</head>
+
+<body onload="initializePage()">
+    <div class="loading-screen" id="loading-screen">
+        <!-- <img src="logo.png" alt="Loading Logo" style="width: 100px; margin-bottom: 20px;"> -->
+        <div class="loading-spinner"></div>
+        <p>로딩중...</p>
+    </div>
+    <div class="container" id="main-container" style="display: none;">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="Logo">
+                <!-- <h1>산미겔</h1> -->
+            </div>
+            <div class="categories">
+                <button onclick="activateButton('intro-btn')" id="intro-btn" class="active">메인</button>
+                <!-- <div class="sub-buttons" id="intro-sub">
+                    <button onclick="showPage('intro-1')">인게임</button>
+                    <button onclick="showPage('intro-2')">디스코드</button>
+                </div> -->
+
+                <button onclick="activateButton('guide-btn')" id="guide-btn">서버 법률</button>
+                <div class="sub-buttons" id="guide-sub">
+                    <button onclick="showPage('guide-1')">제 1장</button>
+                    <button onclick="showPage('guide-2')">제 2장</button>
+                    <button onclick="showPage('guide-3')">제 3장</button>
+                    <button onclick="showPage('guide-4')">제 4장</button>
+                    <button onclick="showPage('guide-5')">제 5장</button>
+                </div>
+
+                <button onclick="activateButton('guide2-btn')" id="guide2-btn">후원 법률</button>
+                <div class="sub-buttons" id="guide2-sub">
+                    <button onclick="showPage('guide2-1')">후원 관련</button>
+                </div>
+
+                <button onclick="activateButton('other-btn')" id="other-btn">직업 안내</button>
+                <div class="sub-buttons" id="other-sub">
+                    <button onclick="showPage('other-1')">경찰</button>
+                    <button onclick="showPage('other-2')">EMS</button>
+                    <button onclick="showPage('other-3')">자동차딜러</button>
+                    <button onclick="showPage('other-4')">메카닉1</button>
+                    <button onclick="showPage('other-5')">배니즈 컴퍼니</button>
+                    <button onclick="showPage('other-6')">조직 1</button>
+                    <button onclick="showPage('other-7')">조직 2</button>
+                </div>
+
+                <button onclick="activateButton('other2-btn')" id="other2-btn">직업 안내</button>
+                <div class="sub-buttons" id="other2-sub">
+                    <button onclick="showPage('other2-1')">버스기사</button>
+                    <button onclick="showPage('other2-2')">트럭기사</button>
+                    <button onclick="showPage('other2-3')">견인기사</button>
+                    <button onclick="showPage('other2-4')">택시기사</button>
+                    <button onclick="showPage('other2-5')">환경미화원</button>
+                </div>
+
+                <button onclick="activateButton('new-btn')" id="new-btn">인게임 설정</button>
+                <div class="sub-buttons" id="new-sub">
+                    <button onclick="showPage('new-1')">마이크 설정</button>
+                    <button onclick="showPage('new-2')">그래픽 설정</button>
+                    <button onclick="showPage('new-3')">키보드 단축키</button>
+                </div>
+
+                <button class="fixed-button" onclick="fivem()">서버 접속</button>
+                <button class="fixed-button2" onclick="discord()">디스코드 접속</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="content-body" id="content-body">
+                <div class="content-title" id="content-title">제목</div>
+                <div class="content-main" id="content-main">
+                    <div class="content-section" id="section-1">
+                        <p>세부 내용 1</p>
+                    </div>
+                    <div class="content-section" id="section-2">
+                        <p>세부 내용 2</p>
+                    </div>
+                    <div class="content-section" id="section-2">
+                        <img src="example.jpg" alt="Example">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="keyboard" style="display: none;">
+        <div class="row">
+            <div class="key special" data-key="Esc">Esc</div>
+            <div class="spacer"></div>
+            <div class="key function" data-key="F1">F1</div>
+            <div class="key function" data-key="F2">F2</div>
+            <div class="key function" data-key="F3">F3</div>
+            <div class="key function" data-key="F4">F4</div>
+            <div class="spacer"></div>
+            <div class="key function" data-key="F5">F5</div>
+            <div class="key function" data-key="F6">F6</div>
+            <div class="key function" data-key="F7">F7</div>
+            <div class="key function" data-key="F8">F8</div>
+            <div class="spacer"></div>
+            <div class="key function" data-key="F9">F9</div>
+            <div class="key function" data-key="F10">F10</div>
+            <div class="key function" data-key="F11">F11</div>
+            <div class="key function" data-key="F12">F12</div>
+        </div>
+
+        <div class="row">
+            <div class="key" data-key="~">~</div>
+            <div class="key" data-key="1">1</div>
+            <div class="key" data-key="2">2</div>
+            <div class="key" data-key="3">3</div>
+            <div class="key" data-key="4">4</div>
+            <div class="key" data-key="5">5</div>
+            <div class="key" data-key="6">6</div>
+            <div class="key" data-key="7">7</div>
+            <div class="key" data-key="8">8</div>
+            <div class="key" data-key="9">9</div>
+            <div class="key" data-key="0">0</div>
+            <div class="key" data-key="-">-</div>
+            <div class="key" data-key="=">=</div>
+            <div class="key special double" data-key="Backspace">⌫</div>
+        </div>
+
+        <div class="row">
+            <div class="key special double" data-key="Tab">Tab</div>
+            <div class="key" data-key="Q">Q</div>
+            <div class="key" data-key="W">W</div>
+            <div class="key" data-key="E">E</div>
+            <div class="key" data-key="R">R</div>
+            <div class="key" data-key="T">T</div>
+            <div class="key" data-key="Y">Y</div>
+            <div class="key" data-key="U">U</div>
+            <div class="key" data-key="I">I</div>
+            <div class="key" data-key="O">O</div>
+            <div class="key" data-key="P">P</div>
+            <div class="key" data-key="[">[</div>
+            <div class="key" data-key="]">]</div>
+            <div class="key special" data-key="\\">＼</div>
+        </div>
+
+        <div class="row">
+            <div class="key special" data-key="CapsLock">CapsLock</div>
+            <div class="key" data-key="A">A</div>
+            <div class="key" data-key="S">S</div>
+            <div class="key" data-key="D">D</div>
+            <div class="key" data-key="F">F</div>
+            <div class="key" data-key="G">G</div>
+            <div class="key" data-key="H">H</div>
+            <div class="key" data-key="J">J</div>
+            <div class="key" data-key="K">K</div>
+            <div class="key" data-key="L">L</div>
+            <div class="key" data-key=";">;</div>
+            <div class="key special" data-key="\'">"</div>
+            <div class="key special" data-key="Enter">Enter</div>
+        </div>
+
+        <div class="row">
+            <div class="key special" data-key="Shift">Shift</div>
+            <div class="key" data-key="Z">Z</div>
+            <div class="key" data-key="X">X</div>
+            <div class="key" data-key="C">C</div>
+            <div class="key" data-key="V">V</div>
+            <div class="key" data-key="B">B</div>
+            <div class="key" data-key="N">N</div>
+            <div class="key" data-key="M">M</div>
+            <div class="key" data-key=",">,</div>
+            <div class="key" data-key=".">.</div>
+            <div class="key" data-key="/">/</div>
+            <div class="key special" data-key="Shift">Shift</div>
+        </div>
+
+        <div class="row">
+            <div class="key special double" data-key="Ctrl">Ctrl</div>
+            <div class="key special double" data-key="Win">Win</div>
+            <div class="key special double" data-key="Alt">Alt</div>
+            <div class="key space" data-key="Space">Space</div>
+            <div class="key special double" data-key="Alt">Alt</div>
+            <div class="key special double" data-key="Win">Win</div>
+            <div class="key special double" data-key="Menu">Menu</div>
+            <div class="key special double" data-key="Ctrl">Ctrl</div>
+        </div>
+
+        <div class="row">
+            <div class="key special" data-key="Home">Home</div>
+            <div class="spacer"></div>
+            <div class="key special" data-key="End">End</div>
+            <div class="key-info" id="keyInfo">키를 누르면 정보가 표시됩니다.</div>
+        </div>
+    </div> -->
+
+    <script>
+        function initializePage() {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                const mainContainer = document.getElementById('main-container');
+
+                loadingScreen.style.display = 'none';
+                mainContainer.style.display = 'flex';
+                mainContainer.style.opacity = '1'; // 부드러운 전환 시작
+
+                activateButton('intro-btn');
+            }, 2000); // Simulates a 2-second loading time
+        }
+
+        function fivem() {
+            window.open("fivem://connact/cfx.re/join/qd8m9z"); // 이동할 외부 사이트 URL 오픈후에 사용
+
+        }
+
+        function discord() {
+            window.open("https://discord.gg/9fvUfKHX7e", "_blank"); // 이동할 외부 사이트 URL
+        }
+
+        function activateButton(buttonId) {
+            document.querySelectorAll('.categories button').forEach(button => button.classList.remove('active'));
+            const button = document.getElementById(buttonId);
+            button.classList.add('active');
+
+            document.querySelectorAll('.sub-buttons').forEach(div => div.style.display = 'none');
+            const subButtons = document.getElementById(buttonId.replace('-btn', '-sub'));
+            if (subButtons) {
+                subButtons.style.display = 'flex';
+            }
+
+            // 카테고리 버튼 클릭 시 기본 내용 로드
+            const content = {
+                "intro-btn": {
+                    title: "메인", details: [
+                        "<strong>🌟 서버 이름:</strong> <span style='color: #f39c12; font-size: 1.2em;'> 산미겔주 / San Meguel State</span>",
+
+                        "<strong>📅 운영 기간:</strong>" +
+                        "<span style='color: #3498db; font-weight: bold;'> 2025년 2월 15일 ~ 2025년 2월 28일</span>",
+
+                        // "<strong>🎮 서버 특징</strong><br>" +
+                        // "<ul style='list-style-type: none; padding: 0;'>" +
+                        // "  <li>✔️ <span style='color: #2ecc71; font-weight: bold;'>자유로운 직업도</span> 고정적인 직업도 퇴근 후 다른직업을 체험</li>" +
+                        // "  <li>✔️ <span style='color: #2ecc71; font-weight: bold;'>현실감 넘치는 경제 시스템</span>: 주식 투자, 부동산 거래, 그리고 나만의 가게 운영까지 모두 가능합니다.</li>" +
+                        // "  <li>✔️ <span style='color: #2ecc71; font-weight: bold;'>커뮤니티 중심의 소셜 활동</span>: 매일 열리는 이벤트와 유저 주도적인 활동으로 몰입감이 배가됩니다.</li>" +
+                        // "  <li>✔️ <span style='color: #2ecc71; font-weight: bold;'>적극적이고 친절한 운영진</span>: 여러분의 피드백을 반영하고, 쾌적한 환경을 유지하기 위해 항상 노력합니다.</li>" +
+                        // "  <li>✔️ <span style='color: #2ecc71; font-weight: bold;'>몰입을 더해주는 커스터마이징된 스크립트</span>: 독창적인 시스템과 미션으로 새로운 RP 경험을 선사합니다.</li>" +
+                        // "</ul>" +
+
+                        "<strong style='font-size: 1.2em;'>📢 공지사항</strong><br>" +
+                        "<ul style='list-style-type: none; padding: 0;'>" +
+                        "  <li>🎁 <span style='color: #e67e22; font-size: 1.05em;'>친구 초대 이벤트 / 친구를 서버에 초대하여 총 20,000$와 차량을 받아가세요!<br><br></span>1명: 인게임 머니 5,000$ <br>2명: 인게임 머니 15,000$ <br>3명: 인게임 차량 포르쉐 만소리 </li><br>" +
+                        "  <li>🏆 <span style='color: #e67e22; font-size: 1.05em;'>일일 보상 / 하루에 한번 일일보상을 받아보세요!</span><br><br>인게임 채팅창에 /오늘의보상 을 입력하시면 룰렛을 돌릴 수 있는 기회가 있습니다<br><br>보상 목록은 인게임에서 확인하세요!</li>" +
+                        "</ul>" +
+
+                        "<strong>✨ 게임 참여 방법</strong><br>" +
+                        "왼쪽 하단에 있는 <span style='color: #e74c3c; font-style: italic;'>\"서버 접속\" \"디스코드 접속\"</span>을 이용해주세요!",
+
+                        "<strong style='font-size: 1.1em;'>💡 지금 바로 참여하여 잊지 못할 RP 경험을 시작해 보세요! 🚀</strong>",
+                        '<img src="BannerSanMiguel.png">'
+                    ]
+
+
+
+                },
+                "guide-btn": { title: "서버 법률", details: ["모든 접속자는 모든 상황에 법률에 적용됩니다.", "인게임 녹화는 필수 입니다."] },
+                "guide2-btn": { title: "후원 법률", details: ["후원 관련한 모두에게 적용되는 법안입니다.", "세부 직업를 눌러 확인하세요"] },
+                "other-btn": { title: "조직 직업 소개", details: ["조직적으로 움직이는 직업 소개입니다.", "세부 직업를 눌러 확인하세요"] },
+                "other2-btn": { title: "자유 직업 소개", details: ["시청에서 선택하거나 부 직업입니다.", "세부 직업를 눌러 확인하세요"] },
+                "new-btn": { title: "인게임 설정", details: ["인게임 설정은 필수 입니다.", "세부 버튼을 눌러 확인하세요"] }
+            };
+
+            const selectedContent = content[buttonId];
+            if (selectedContent) {
+                const body = document.getElementById('content-body');
+                body.innerHTML = `
+            <div class="content-title">${selectedContent.title}</div>
+            <div class="content-main">
+                ${selectedContent.details.map(detail => `
+                    <div class="content-section">
+                        <p>${detail}</p>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+            }
+        }
+
+        function showPage(page) {
+            const body = document.getElementById('content-body');
+
+            const val = '테스트'
+
+            const pageContent = {
+                // "intro-1": { title: "소개 1", details: ["소개 1의 세부 내용 1", "소개 1의 세부 내용 2"], image: "example1.jpg" },
+                // "intro-2": { title: "소개 2", details: ["소개 2의 세부 내용 1", "소개 2의 세부 내용 2"], image: "example2.jpg" },
+                "guide-1": { title: "제 1장", details: ["<strong>총칙</strong>", "<strong>제1조 (목적)</strong><br><br> 본 법률은 파이브엠 서버 내 질서를 유지하고, 플레이어 간 공정하고 원활한 상호작용을 보장하며, 모두가 즐길 수 있는 환경을 조성하는 것을 목적으로 한다.", "<strong>제2조 (적용 범위)</strong><br><br> 본 법률은 파이브엠 서버 내 모든 플레이어, 관리자 및 관계자에게 적용된다", "<strong>제3조 (용어 정의) </strong><br><br>1. \"서버\"는 본 파이브엠 역할플레이(Roleplay) 서버를 의미한다. <br><br>2. \"플레이어\"는 서버에 접속하여 활동하는 개인을 의미한다. <br><br>3. \"관리자\"는 서버 관리와 운영을 담당하는 자를 의미한다.<br><br>4. \"RP\"는 Roleplay(역할극)를 의미한다."] },
+                "guide-2": { title: "제 2장", details: ["<strong>플레이어의 권리와 의무</strong>", "<strong>제4조 (플레이어의 권리)</strong><br><br>1. 모든 플레이어는 서버에서 동등한 권리를 가진다.<br><br>2. 플레이어는 RP 상황에서 자신의 캐릭터에 적합한 자유로운 역할극을 수행할 권리가 있다.<br><br>3. 플레이어는 부당한 대우를 받지 않을 권리가 있다.", "<strong>제5조 (플레이어의 의무)</strong><br><br>1. 플레이어는 서버 규칙과 법률을 준수해야 한다.<br><br>2. 다른 플레이어와 관리자에게 존중을 표해야 한다.<br><br>3. RP 상황을 벗어난 메타게임(Metagaming) 및 파워게임(Powergaming)을 금지한다."] },
+                "guide-3": { title: "제 3장", details: ["<strong>관리자의 권한과 책임</strong>", "<strong>제6조 (관리자의 역할)</strong><br><br>1. 관리자는 서버의 질서와 규칙을 유지하기 위해 권한을 행사한다.<br><br>2. 관리자는 공정하고 중립저긍로 업무를 수행해야 한다.", "<strong>제7조 (관리자의 권한)</strong><br><br>1. 규칙 위반 행위에 대해 제재를 가할 수 있다<br><br>2. 서버 내 상황을 관리하고 플레이어 간 분쟁을 중재할 수 있다.<br><br>3. 서버 운영을 위해 필요한 공지를 게시하고, 서버 환경을 개선할 수 있다.", "<strong>제8조 (관리자의 책임)</strong><br><br>1. 관리자는 자신의 구너한을 남용하지 않아야 한다.<br><br>2. 모든 결정은 서버의 공정성과 플레이어의 즐거움을 우선으로 해야 한다."] },
+                "guide-4": { title: "제 4장", details: ["<strong>RP 상황에서의 규칙</strong>", "<strong>제9조 (RP 기본 규칙)</strong><br><br>1. 플레이어는 자신이 설정한 캐릭터의 성격과 배경에 맞는 RP를 해야 한다.<br><br>2. RP 중에는 현실과 게임을 혼동하지 않아야 한다.<br><br>3. 상대방의 RP를 존중하며, 부당한 간섭을 삼간다.", "<strong>제10조 (금지 행위)</strong><br><br>1. 현실 자금을 이용한 게임 내 거래<br><br>2. 고의적인 RP 상황 방해<br><br>3. 서버 규칙에 반하는 행동", "<strong>제11조 (상황 종료)</strong><br><br>RP 상황 종료시 , 모든 플레잉어는 서로의 행동을 존중하며 마무리한다. 불만 사항은 관리자에게 신고할 수 있다."] },
+                "guide-5": { title: "제 5장", details: ["<strong>처벌 규정</strong>", "<strong>제12조 (처벌의 기준)</strong><br><br>1. 경미한 위반: 경고 또는 단기 접속 제한.<br><br>2. 중대한 위반: 장기 접속 제한 또는 영구 차단<br><br>3. 반복적인 위반: 처벌 수위를 단계적으로 상향 적용", "<strong>제13조 (처벌 절차)</strong><br><br>1. 관리잔느 규칙 위반 사항을 조사한 후 처벌을 결정한다.<br><br>2. 플레이어는 처벌에 대해 이의제기를 할 수 있다.<br><br>3. 이의제기 시, 관리팀은 추가 검토 후 최종 결정을 내린다.", "<strong>제14조 (면책 사항)</strong><br><br>관리자는 공정한 조사와 판단을 통해 처벌을 내렸을 경우, 그에 따른 책임에서 면책된다."] },
+                "guide2-1": {
+                    title: "후원 관련", details: [
+                        "<strong>제1조 (목적)</strong><br>이 법률은 파이브엠 서버 운영에 필요한 후원 시스템의 투명성과 공정성을 보장하며, 후원자 및 일반 플레이어의 권익을 보호하는 것을 목적으로 한다.",
+                        "<strong>제2조 (적용 범위)</strong><br><br>이 법률은 파이브엠 서버의 후원과 관련된 모든 행위 및 그에 따른 혜택 제공에 적용된다.",
+                        "<strong>제3조 (용어 정의)</strong><br><br>\"후원\"은 플레이어가 서버 운영을 지원하기 위해 제공하는 금전적 기여를 의미하며, \"후원자\"는 서버에 금전적 기여를 한 플레이어를, \"후원 혜택\"은 서버가 후원자에게 제공하는 게임 내 특전이나 보상을, \"일반 플레이어\"는 후원을 하지 않은 서버 이용자를 의미한다.",
+                        "<strong>제4조 (후원자의 권리)</strong><br><br>후원자는 서버에서 명시된 혜택을 받을 권리가 있으며, 후원 내용 및 사용처에 대해 서버 운영자로부터 투명한 정보를 요구할 권리가 있다. 또한, 후원자는 후원에 따라 권리 행사를 방해받지 않을 권리가 있다.",
+                        "<strong>제5조 (후원자의 의무)</strong><br><br>후원자는 서버의 원칙 및 규칙을 준수해야 하며, 후원 혜택을 남용하여 다른 플레이어에게 피해를 주는 행위를 해서는 안 된다.",
+                        "<strong>제6조 (운영자의 의무)</strong><br><br>운영자는 후원금을 서버의 원칙 및 규칙에 맞게 사용해야 하며, 후원자에게 투명한 정보를 제공하고 공정하게 혜택을 배분해야 한다.",
+                        "<strong>제7조 (후원 혜택의 제공)</strong><br><br>후원 혜택은 서버 운영의 일환으로 제공되며, 게임 내에서 불공정한 우위를 제공하지 않는 선에서 이루어져야 한다. 후원 혜택의 종류와 범위는 서버 공지에 명시하며, 사전 안내 없이 변경하지 않는다.",
+                        "<strong>제8조 (혜택 제한 사항)</strong><br><br>후원 혜택은 현실 자금과 게임 내 경제를 왜곡하지 않도록 설정되어야 하며, 서버 이용자 간의 공정한 게임 환경을 해치지 않도록 한다."
+                    ]
+                },
+                "other-1": { title: "경찰", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example1.jpg" },
+                "other-2": { title: "EMS", details: ["안내문 2의 세부 내용 1", "안내문 2의 세부 내용 2"], image: "example2.jpg" },
+                "other-3": { title: "자동차딜러", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example3.jpg" },
+                "other-4": { title: "메카닉1", details: ["안내문 2의 세부 내용 1", "안내문 2의 세부 내용 2"], image: "example4.jpg" },
+                "other-5": { title: "배니즈 커스텀", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example5.jpg" },
+                "other2-1": { title: "버스기사", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example1.jpg" },
+                "other2-2": { title: "트럭기사", details: ["안내문 2의 세부 내용 1", "안내문 2의 세부 내용 2"], image: "example2.jpg" },
+                "other2-3": { title: "견인기사", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example3.jpg" },
+                "other2-4": { title: "택시기사", details: ["안내문 2의 세부 내용 1", "안내문 2의 세부 내용 2"], image: "example4.jpg" },
+                "other2-5": { title: "환경미화원", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: "example5.jpg" },
+                "new-1": { title: "마이크 설정", details: ["새로운 1의 세부 내용 1"], image: ["001.png"] },
+                "new-2": { title: "UI 고정 설정", details: ["1920x1080 사이즈로 고정하지 않으면 UI가 맞지 않을 수 있습니다!<br><br>아래 사진을 참고하여 설정해 주세요<br><br>1. 설정 들어가기<br>2. Game 누르기<br>3. Fixed-size NUI 켜기<br><br>보통 저 설정이 꺼져 있습니다. 활성화가 되어 있다면 그냥 두시면 됩니다."], image: ["001.png", "002.png", "003.png"] },
+                "new-3": {
+                    title: "키보드 키 리스트", details: ["키보드 키 리스트",
+                    `<div class="keyboard"> 
+                        <div class="row"> 
+                            <div class="key special" data-key="Esc" onclick="run();">Esc</div> 
+                            <div class="spacer"></div> 
+                            <div class="key function" data-key="F1" onclick="run();">F1</div> 
+                            <div class="key function" data-key="F2" onclick="run();">F2</div> 
+                            <div class="key function" data-key="F3" onclick="run();">F3</div> 
+                            <div class="key function" data-key="F4" onclick="run();">F4</div> 
+                            <div class="spacer"></div> 
+                            <div class="key function" data-key="F5" onclick="run();">F5</div> 
+                            <div class="key function" data-key="F6" onclick="run();">F6</div> 
+                            <div class="key function" data-key="F7" onclick="run();">F7</div> 
+                            <div class="key function" data-key="F8" onclick="run();">F8</div> 
+                            <div class="spacer"></div> 
+                            <div class="key function" data-key="F9" onclick="run();">F9</div> 
+                            <div class="key function" data-key="F10" onclick="run();">F10</div> 
+                            <div class="key function" data-key="F11" onclick="run();">F11</div> 
+                            <div class="key function" data-key="F12" onclick="run();">F12</div> 
+                        </div> 
+ 
+                        <div class="row"> 
+                            <div class="key" data-key="~" onclick="run();">~</div> 
+                            <div class="key" data-key="1" onclick="run();">1</div> 
+                            <div class="key" data-key="2" onclick="run();">2</div> 
+                            <div class="key" data-key="3" onclick="run();">3</div> 
+                            <div class="key" data-key="4" onclick="run();">4</div> 
+                            <div class="key" data-key="5" onclick="run();">5</div> 
+                            <div class="key" data-key="6" onclick="run();">6</div> 
+                            <div class="key" data-key="7" onclick="run();">7</div> 
+                            <div class="key" data-key="8" onclick="run();">8</div> 
+                            <div class="key" data-key="9" onclick="run();">9</div> 
+                            <div class="key" data-key="0" onclick="run();">0</div> 
+                            <div class="key" data-key="-" onclick="run();">-</div> 
+                            <div class="key" data-key="=" onclick="run();">=</div> 
+                            <div class="key special double" data-key="Backspace" onclick="run();">⌫</div> 
+                        </div> 
+ 
+                        <div class="row"> 
+                            <div class="key special double" data-key="Tab" onclick="run();">Tab</div> 
+                            <div class="key" data-key="Q" onclick="run();">Q</div> 
+                            <div class="key" data-key="W" onclick="run();">W</div> 
+                            <div class="key" data-key="E" onclick="run();">E</div> 
+                            <div class="key" data-key="R" onclick="run();">R</div> 
+                            <div class="key" data-key="T" onclick="run();">T</div> 
+                            <div class="key" data-key="Y" onclick="run();">Y</div> 
+                            <div class="key" data-key="U" onclick="run();">U</div> 
+                            <div class="key" data-key="I" onclick="run();">I</div> 
+                            <div class="key" data-key="O" onclick="run();">O</div> 
+                            <div class="key" data-key="P" onclick="run();">P</div> 
+                            <div class="key" data-key="[" onclick="run();">[</div> 
+                            <div class="key" data-key="]" onclick="run();">]</div> 
+                            <div class="key special" data-key="\\" onclick="run();">＼</div> 
+                        </div> 
+ 
+                        <div class="row"> 
+                           <div class="key special" data-key="CapsLock" onclick="run();">CapsLock</div> 
+                           <div class="key" data-key="A" onclick="run();">A</div> 
+                           <div class="key" data-key="S" onclick="run();">S</div> 
+                           <div class="key" data-key="D" onclick="run();">D</div> 
+                           <div class="key" data-key="F" onclick="run();">F</div> 
+                           <div class="key" data-key="G" onclick="run();">G</div> 
+                           <div class="key" data-key="H" onclick="run();">H</div> 
+                           <div class="key" data-key="J" onclick="run();">J</div> 
+                           <div class="key" data-key="K" onclick="run();">K</div> 
+                           <div class="key" data-key="L" onclick="run();">L</div> 
+                           <div class="key" data-key=";" onclick="run();">;</div> 
+                           <div class="key special" data-key="\'" onclick="run();">"</div> 
+                           <div class="key special" data-key="Enter" onclick="run();">Enter</div> 
+                       </div> 
+ 
+                    <div class="row"> 
+                        <div class="key special" data-key="Shift" onclick="run();">Shift</div> 
+                        <div class="key" data-key="Z" onclick="run();">Z</div> 
+                        <div class="key" data-key="X" onclick="run();">X</div> 
+                        <div class="key" data-key="C" onclick="run();">C</div> 
+                        <div class="key" data-key="V" onclick="run();">V</div> 
+                        <div class="key" data-key="B" onclick="run();">B</div> 
+                        <div class="key" data-key="N" onclick="run();">N</div> 
+                        <div class="key" data-key="M" onclick="run();">M</div> 
+                        <div class="key" data-key="," onclick="run();">,</div> 
+                        <div class="key" data-key="." onclick="run();">.</div> 
+                        <div class="key" data-key="/" onclick="run();">/</div> 
+                        <div class="key special" data-key="Shift" onclick="run();">Shift</div> 
+                    </div> 
+ 
+                    <div class="row"> 
+                        <div class="key special double" data-key="LCtrl" onclick="run();">LCtrl</div> 
+                        <div class="key special double" data-key="Win" onclick="run();">Win</div> 
+                        <div class="key special double" data-key="LAlt" onclick="run();">LAlt</div> 
+                        <div class="key space" data-key="Space" onclick="run();">Space</div> 
+                        <div class="key special double" data-key="RAlt" onclick="run();">RAlt</div> 
+                        <div class="key special double" data-key="Win" onclick="run();">Win</div> 
+                        <div class="key special double" data-key="Menu" onclick="run();">Menu</div> 
+                        <div class="key special double" data-key="RCtrl" onclick="run();">RCtrl</div> 
+                    </div> 
+ 
+                    <div class="row">
+                        <div class="key special" data-key="Home" onclick="run();">Home</div>
+                        <div class="spacer"></div>
+                        <div class="key special" data-key="End" onclick="run();">End</div>
+                    </div><br>`,
+                    `<div id="key-description">키를 클릭하세요.</div>`
+                    ], image: ["BannerSanMiguel.png"]
+                }
+            };
+
+            const selectedPage = pageContent[page];
+            if (selectedPage) {
+                body.innerHTML = `
+            <div class="content-title">${selectedPage.title}</div>
+            <div class="content-main">
+                ${selectedPage.details.map(detail => `
+                    <div class="content-section">
+                        <p>${detail}</p>
+                    </div>
+                `).join("")}
+                ${selectedPage.image.map(image => `
+                    <div class="content-section">
+                        <img src="${image}">
+                    </div>
+                `).join("")}
+            </div>
+        `;
+            }
+        }
+
+        const keyDescriptions = {
+            "Esc": "일시정지 메뉴",
+            "F1": "선택 창",
+            "F2": "애니메이션",
+            "F3": "직업 관리창",
+            "F6": "UI 수정",
+            "F7": "청구서 관리",
+            "F9": "정비공 메뉴",
+            "F12": "서버 인포",
+            "~": "마이크 범위 설정",
+            "Backspace": "메뉴끄기",
+            "1": "인벤토리 단축키 1",
+            "2": "인벤토리 단축키 2",
+            "3": "인벤토리 단축키 3",
+            "4": "인벤토리 단축키 4",
+            "5": "인벤토리 단축키 5",
+            "Tab": "인벤토리 열기",
+            "T": "채팅창 열기 (채팅창 끄기 ESC)",
+            "P": "맵 열기",
+            "CapsLock": "자전거 빨리달리기",
+            "F": "상호작용",
+            "G": "차량: 시동 켜기/끄기",
+            "L": "차량: 잠금/잠금해제",
+            "Z": "인벤토리 단축키 리스트",
+            "X": "양손 들기",
+            "C": "뒤돌아보기",
+            "V": "인칭 바꾸기",
+            "B": "방향 가리키기, 차량: 안전벨트",
+            "M": "휴대폰 열기",
+            "LCtrl": "앉기",
+            "LAlt": "상호작용",
+            "Space": "점프",
+            "Home": "경찰, EMS 메뉴",
+            "End": "경찰, EMS 메뉴",
+        };
+
+        function run() {
+            try {
+            const element = event.target.getAttribute('data-key');
+            const description = keyDescriptions[element] || "설명이 없습니다.";
+
+            const myinput = document.getElementById('key-description');
+            myinput.innerText =  "단축키: " + description;
+            } catch (err) {
+            alert(err);
+            }
+        }
+
+        window.addEventListener('message', function (event) {
+            const data = event.data;
+
+            if (data.action === 'openUI') {
+                document.getElementById('main-container').style.display = 'flex';
+            } else if (data.action === 'closeUI') {
+                document.getElementById('main-container').style.display = 'none';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
