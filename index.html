@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>산미겔주</title>
     <link rel="icon" href="image/logo.ico" type="image/x-icon">
-    <head>
-        <meta property="og:title" content="산미겔주 안내">
-        <meta property="og:description" content="서버에 대한 모든 정보가 포함되어있습니다!">
-        <meta property="og:image" content="https://imgur.com/dgO4s0j">
-        <meta property="og:url" content="https://sanmiguel00.github.io/">
-        <meta property="og:type" content="website">
-    </head>      
+    <meta property="og:title" content="산미겔주 안내">
+    <meta property="og:description" content="서버에 대한 모든 정보가 포함되어있습니다!">
+    <meta property="og:image" content="https://imgur.com/dgO4s0j">
+    <meta property="og:url" content="https://sanmiguel00.github.io/">
+    <meta property="og:type" content="website">
     <style>
         body {
             margin: 0;
@@ -484,7 +482,7 @@
                     <button onclick="showPage('guide2-1')">후원 관련</button>
                 </div> -->
 
-                <button onclick="activateButton('other-btn')" id="other-btn">직업 안내</button>
+                <!-- <button onclick="activateButton('other-btn')" id="other-btn">직업 안내</button>
                 <div class="sub-buttons" id="other-sub">
                     <button onclick="showPage('other-1')">경찰</button>
                     <button onclick="showPage('other-2')">EMS</button>
@@ -492,10 +490,16 @@
                     <button onclick="showPage('other-4')">메카닉</button>
                     <button onclick="showPage('other-5')">배니즈 컴퍼니</button>
                     <button onclick="showPage('other-6')">조직 (준비중)</button>
-                </div>
+                </div> -->
 
                 <button onclick="activateButton('other2-btn')" id="other2-btn">직업 안내</button>
                 <div class="sub-buttons" id="other2-sub">
+                    <button onclick="showPage('other-1')">경찰</button>
+                    <button onclick="showPage('other-2')">EMS</button>
+                    <button onclick="showPage('other-3')">자동차딜러</button>
+                    <button onclick="showPage('other-4')">메카닉</button>
+                    <button onclick="showPage('other-5')">배니즈 컴퍼니</button>
+                    <button onclick="showPage('other-6')">조직 (준비중)</button>
                     <button onclick="showPage('other2-1')">택시기사</button>
                     <button onclick="showPage('other2-2')">버스기사</button>
                     <button onclick="showPage('other2-3')">트럭기사</button>
@@ -515,9 +519,9 @@
 
                 <button onclick="activateButton('new-btn')" id="new-btn">인게임 설정</button>
                 <div class="sub-buttons" id="new-sub">
-                    <button onclick="showPage('new-1')">음성채팅 설정</button>
-                    <button onclick="showPage('new-2')">그래픽 설정</button>
-                    <button onclick="showPage('new-3')">키보드 단축키</button>
+                    <button onclick="showPage('new-1')">1. 음성채팅 설정</button>
+                    <button onclick="showPage('new-2')">2. 그래픽 설정</button>
+                    <button onclick="showPage('new-3')">3. 키보드 단축키</button>
                 </div>
 
                 <button class="fixed-button" onclick="fivem()">서버 접속</button>
@@ -580,7 +584,7 @@
             const content = {
                 "intro-btn": {
                     title: "메인", details: [
-                        "<strong>🌟 서버 이름:</strong> <span style='color: #f39c12; font-size: 1.2em;'> 산미겔주 / San Meguel State</span>",
+                        "<strong>🌟 서버 이름:</strong> <span style='color: #f39c12; font-size: 1.2em;'> 산미겔주 / San Miguel State</span>",
 
                         "<strong>📅 운영 기간:</strong>" +
                         "<span style='color: #3498db; font-weight: bold;'> 2025년 2월 15일 ~ 2025년 2월 28일</span>",
@@ -604,7 +608,7 @@
                         "왼쪽 하단에 있는 <span style='color: #e74c3c; font-style: italic;'>\"서버 접속\" \"디스코드 접속\"</span>을 이용해주세요!",
 
                         "<strong style='font-size: 1.1em;'>💡 지금 바로 참여하여 잊지 못할 RP 경험을 시작해 보세요! 🚀</strong>",
-                        '<img src="BannerSanMiguel.png">'
+                        '<img src="image/BannerSanMiguel.png">'
                     ]
 
 
@@ -663,6 +667,7 @@
                 "other-3": { title: "자동차딜러", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: ["example1.jpg"] },
                 "other-4": { title: "메카닉1", details: ["안내문 2의 세부 내용 1", "안내문 2의 세부 내용 2"], image: ["example1.jpg"] },
                 "other-5": { title: "배니즈 커스텀", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: ["example1.jpg"] },
+                "other-6": { title: "조직 (준비중)", details: ["안내문 1의 세부 내용 1", "안내문 1의 세부 내용 2"], image: ["example1.jpg"] },
 
 
                 "other2-1": { title: "택시기사 (시청)", details: ["직업 선택하기", "안내문 1의 세부 내용 2"], image: ["example1.jpg"] },
@@ -682,8 +687,8 @@
                 "other2-15": { title: "핫도그판매 (준비중)", details: ["직업 선택하기", "안내문 1의 세부 내용 2"], image: ["example1.jpg"] },
 
 
-                "new-1": { title: "음성채팅 설정", details: ["출력/마이크 설정", "음성채팅은 RP를 즐기기위해선 필수 입니다. <br>하지만 마이크 사정이 힘드신분들은 사용안하셔도됩니다. <br><br>1. <strong>ESC </strong>누르기<br>2. <strong>설정</strong> 누르기<br>3. <strong>음성 채팅</strong> 선택하기<br>4. <strong>음성 채팅 사용</strong> 을 <strong>끄기</strong> 에서 <strong>켜기</strong>로 변경하기<br>5. <strong>음성 채팅 볼륨</strong>을 자신에게 맞게 설정하기 (모르시는분은 제일 크게해주세요) SFX, 음악 볼륨은 원하는 수치로 설정하세요<br>6. <strong>마이크 사용</strong>을 <strong>끄기</strong> 에서 <strong>켜기</strong>로 변경해주세요<br>8. <strong>마이크 볼륨, 마이크 감도</strong>는 최대치로 설정해주세요."], image: ["image/004.png", "image/005.png", "image/006.png", "image/007.png"] },
-                "new-2": { title: "UI 고정 설정", details: ["1920x1080 사이즈로 고정하지 않으면 UI가 맞지 않을 수 있습니다!<br><br>아래 사진을 참고하여 설정해 주세요<br><br>1. 설정 들어가기<br>2. Game 누르기<br>3. Fixed-size NUI 켜기<br><br>보통 저 설정이 꺼져 있습니다. 활성화가 되어 있다면 그냥 두시면 됩니다."], image: ["image/001.png", "image/002.png", "image/003.png"] },
+                "new-1": { title: "음성채팅 설정", details: ["출력/마이크 설정", "음성채팅은 RP를 즐기기위해선 필수 입니다. <br>하지만 마이크 사정이 힘드신분들은 사용안하셔도됩니다. <br><br>1. <strong>ESC </strong>누르기<br>2. <strong>설정</strong> 누르기<br>3. <strong>음성 채팅</strong> 선택하기<br>4. <strong>음성 채팅 사용</strong> 을 <strong>끄기</strong> 에서 <strong>켜기</strong>로 변경하기<br>5. <strong>음성 채팅 볼륨</strong>을 자신에게 맞게 설정하기 (모르시는분은 제일 크게해주세요) SFX, 음악 볼륨은 원하는 수치로 설정하세요<br>6. <strong>마이크 사용</strong>을 <strong>끄기</strong> 에서 <strong>켜기</strong>로 변경해주세요<br>7. <strong>마이크 볼륨, 마이크 감도</strong>는 최대치로 설정해주세요. <br><br>다음: 그래픽 설정"], image: ["image/004.png", "image/005.png", "image/006.png", "image/007.png"] },
+                "new-2": { title: "UI 고정 설정", details: ["파이브엠 설정<br><br>1920x1080 사이즈로 고정하지 않으면 UI가 맞지 않을 수 있습니다!<br><br>아래 사진을 참고하여 설정해 주세요<br><br>1. 설정 들어가기<br>2. Game 누르기<br>3. Fixed-size NUI 켜기<br><br>보통 저 설정이 꺼져 있습니다. 활성화가 되어 있다면 그냥 두시면 됩니다. <br><br>인게임 설정<br><br>설정을 하지않으면 지점토 그래픽이 될 수 있습니다.<br><br>1. 그래픽 누르기<br>2. Extended Texture Budget 을 스크롤하여 찾습니다.<br>3. 수치가 0으로 되어있다면 최대로 올려주시면 됩니다.<br><br>이해가 어려우시다면 아래 사진을 참고하시면서 설정하세요!<br><br>다음: 키보드 리스트(단축키)"], image: ["image/001.png", "image/002.png", "image/003.png", "image/008.png", "image/009.png", "image/010.png"] },
                 "new-3": {
                     title: "키보드 키 리스트", details: ["키보드 키 리스트",
                     `<div id="key-description">키를 클릭하세요.</div>`,
@@ -813,7 +818,7 @@
 
         const keyDescriptions = {
             "Esc": "일시정지 메뉴",
-            "F1": "선택 창",
+            "F1": "다이얼 메뉴",
             "F2": "애니메이션",
             "F3": "직업 관리창",
             "F6": "UI 수정",
